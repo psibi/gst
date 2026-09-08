@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GST Bill Generator</title>
+    <link data-trunk rel="rust" data-wasm-opt="z" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <style>
+      .invoice-sheet {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        padding: 12px;
+      }
+      .invoice-sheet .card {
+        box-shadow: none;
+        border: 1px solid #e3e3e3;
+      }
+      .hint {
+        font-size: 0.8rem;
+        color: #6c757d;
+      }
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background: #fff !important;
+        }
+        .container-fluid {
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        .row {
+          margin: 0 !important;
+        }
+        .invoice-col {
+          flex: 0 0 100% !important;
+          max-width: 100% !important;
+          padding: 0 !important;
+        }
+        .invoice-sheet {
+          padding: 0 !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+        }
+        .invoice-sheet .card {
+          border: 0 !important;
+        }
+        @page {
+          size: A4;
+          margin: 12mm;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <!-- The whole app (Leptos CSR) mounts here. -->
+  </body>
+</html>
