@@ -12,8 +12,8 @@ use leptos::prelude::*;
 use crate::config::Config;
 use crate::log::{error as console_error, warn as console_warn};
 use crate::logic::{
-    days_in_month, finance_month_index, finance_year, fmt_amount, input_value,
-    previous_month_clamped, textarea_value, total_amount, Ymd,
+    Ymd, days_in_month, finance_month_index, finance_year, fmt_amount, input_value,
+    previous_month_clamped, textarea_value, total_amount,
 };
 
 // ---------------------------------------------------------------------------
@@ -68,9 +68,7 @@ fn guess_draft(cfg: &Config) -> Draft {
             }
         }
         Err(err) => {
-            console_warn(&format!(
-                "Could not read the clock to guess dates: {err:#}"
-            ));
+            console_warn(&format!("Could not read the clock to guess dates: {err:#}"));
             Draft {
                 date: String::new(),
                 due: String::new(),
@@ -152,8 +150,8 @@ fn full_invoice_no(cfg: RwSignal<Config>, fields: InvoiceFields) -> Memo<String>
         if !prefix.is_empty() {
             parts.push(prefix);
         }
-        if let Some(fy) = Ymd::parse(&fields.date.get())
-            .and_then(|date| finance_year(date.year, date.month))
+        if let Some(fy) =
+            Ymd::parse(&fields.date.get()).and_then(|date| finance_year(date.year, date.month))
         {
             parts.push(fy.to_string());
         }
@@ -302,10 +300,20 @@ pub fn App() -> impl IntoView {
     let cfg = RwSignal::new(Config::load_or_default());
     let fields = InvoiceFields::new(&guess_draft(&cfg.get_untracked()));
 
-    let invoice_active =
-        move || if view.get() == AppView::Invoice { "active" } else { "" };
-    let settings_active =
-        move || if view.get() == AppView::Settings { "active" } else { "" };
+    let invoice_active = move || {
+        if view.get() == AppView::Invoice {
+            "active"
+        } else {
+            ""
+        }
+    };
+    let settings_active = move || {
+        if view.get() == AppView::Settings {
+            "active"
+        } else {
+            ""
+        }
+    };
 
     view! {
         <div class="container-fluid py-3">
@@ -351,13 +359,11 @@ pub fn App() -> impl IntoView {
 fn InvoiceWorkspace(cfg: RwSignal<Config>, fields: InvoiceFields) -> impl IntoView {
     let on_new = move |_| fields.apply(&guess_draft(&cfg.get_untracked()));
 
-    let on_print = move |_| {
-        match web_sys::window() {
-            Some(window) => {
-                let _ = window.print();
-            }
-            None => console_warn("print() unavailable: no window"),
+    let on_print = move |_| match web_sys::window() {
+        Some(window) => {
+            let _ = window.print();
         }
+        None => console_warn("print() unavailable: no window"),
     };
 
     let on_download = move |_| {

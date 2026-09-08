@@ -4,7 +4,7 @@
 //! Nothing in this module ever panics: all parsing is fallible and all array
 //! access is bounds-checked.
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use wasm_bindgen::JsCast;
 
 /// Calendar date with 1-based month and day.
@@ -102,8 +102,18 @@ pub fn finance_year(year: i32, month: u32) -> Option<i32> {
 }
 
 const MONTH_NAMES: [&str; 12] = [
-    "January", "February", "March", "April", "May", "June", "July", "August",
-    "September", "October", "November", "December",
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
 ];
 
 /// Full English month name, or `None` for an invalid month.
@@ -124,11 +134,7 @@ pub fn parse_amount(s: &str) -> Option<f64> {
 /// `hours * rate`; `None` while either side is missing or invalid.
 pub fn total_amount(hours: &str, rate: &str) -> Option<f64> {
     let total = parse_amount(hours)? * parse_amount(rate)?;
-    if total.is_finite() {
-        Some(total)
-    } else {
-        None
-    }
+    if total.is_finite() { Some(total) } else { None }
 }
 
 /// Format money with exactly two decimals, e.g. `718865.96`.

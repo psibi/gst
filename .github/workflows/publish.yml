@@ -1,0 +1,84 @@
+name: CI & Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Basic sanity checks on every push/PR (mirrors the old cc-parser-ui
+  # workflow, adapted to this single-crate repo).
+  ci:
+    name: fmt / clippy / test
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+
+      # Keep the @rev in sync with the channel pinned in rust-toolchain.toml
+      # (dtolnay/rust-toolchain selects the toolchain from its @rev).
+      - uses: dtolnay/rust-toolchain@1.94.1
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2.9.2
+
+      - name: Run all checks (just ci)
+        run: just ci
+
+  # Build the WASM site via the justfile publish recipe and deploy to
+  # GitHub Pages. Only on pushes to main.
+  publish:
+    name: Publish to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      # Never cancel a production deploy that is already running.
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@1.94.1
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install just and trunk
+        uses: taiki-e/install-action@v2.87.8
+        with:
+          tool: just,trunk
+
+      # index.html asks trunk for wasm-opt -z; trunk needs binaryen's
+      # wasm-opt binary on PATH.
+      - name: Install wasm-opt (binaryen)
+        run: sudo apt-get update && sudo apt-get install -y binaryen
+
+      - uses: Swatinem/rust-cache@v2.9.2
+
+      # Base path /gst/ is hardcoded in the justfile publish recipe
+      # (site is served from http://psibi.in/gst).
+      - name: Build site (just publish)
+        run: just publish
+
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

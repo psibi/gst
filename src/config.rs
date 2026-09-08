@@ -4,7 +4,7 @@
 //! baked in. Whatever the user types in the Settings view is saved to
 //! localStorage on every change and restored the next time the page loads.
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result, anyhow};
 use serde::{Deserialize, Serialize};
 
 /// localStorage key under which the settings are persisted.
