@@ -12,7 +12,7 @@ use leptos::prelude::*;
 use crate::config::Config;
 use crate::log::{error as console_error, warn as console_warn};
 use crate::logic::{
-    Ymd, days_in_month, finance_month_index, finance_year, fmt_amount, input_value,
+    Ymd, days_in_month, finance_month_index, finance_year, fmt_amount, fmt_decimal, input_value,
     previous_month_clamped, textarea_value, total_amount,
 };
 
@@ -504,36 +504,39 @@ fn InvoiceSheet(
                 </div>
 
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col mb-8"></div>
-                        <div class="col mb-2">
-                            <div class="row">
-                                <div class="col-sm-3 font-weight-bold">"GSTIN"</div>
-                                <div class="col text-muted">{move || cfg.get().seller_gstin.clone()}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3 font-weight-bold">"State"</div>
-                                <div class="col text-muted">{move || cfg.get().seller_state.clone()}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3 font-weight-bold">"PAN"</div>
-                                <div class="col text-muted">{move || cfg.get().seller_pan.clone()}</div>
-                            </div>
-                        </div>
-                        <div class="col mb-2">
-                            <div class="row">
-                                <div class="col-sm-5 font-weight-bold">"Invoice Date"</div>
-                                <div class="col text-muted">{move || fields.date.get()}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-5 font-weight-bold">"Invoice No"</div>
-                                <div class="col text-muted">{move || full_no.get()}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col font-weight-bold">"Reference No."</div>
-                                <div class="col text-muted">{move || fields.reference.get()}</div>
-                            </div>
-                        </div>
+                    <div class="row justify-content-end">
+                        <table class="mr-4">
+                            <tbody>
+                                <tr>
+                                    <td class="font-weight-bold pr-2">"GSTIN"</td>
+                                    <td class="text-muted text-nowrap">{move || cfg.get().seller_gstin.clone()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold pr-2">"State"</td>
+                                    <td class="text-muted">{move || cfg.get().seller_state.clone()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold pr-2">"PAN"</td>
+                                    <td class="text-muted text-nowrap">{move || cfg.get().seller_pan.clone()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="font-weight-bold pr-2">"Invoice Date"</td>
+                                    <td class="text-muted text-nowrap">{move || fields.date.get()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold pr-2">"Invoice No"</td>
+                                    <td class="text-muted text-nowrap">{move || full_no.get()}</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold pr-2">"Reference No."</td>
+                                    <td class="text-muted">{move || fields.reference.get()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -601,8 +604,8 @@ fn InvoiceSheet(
                                     <td class="center">"1"</td>
                                     <td class="left strong">{move || fields.item.get()}</td>
                                     <td class="left">{move || fields.hsn.get()}</td>
-                                    <td class="right">{move || fields.hours.get()}</td>
-                                    <td class="center">{move || fields.rate.get()}</td>
+                                    <td class="right">{move || fmt_decimal(&fields.hours.get())}</td>
+                                    <td class="center">{move || fmt_decimal(&fields.rate.get())}</td>
                                     <td class="right">"0.00"</td>
                                     <td class="right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
                                     <td class="right">"0.00"</td>

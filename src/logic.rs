@@ -142,6 +142,26 @@ pub fn fmt_amount(value: f64) -> String {
     format!("{value:.2}")
 }
 
+/// Display form of a user-entered numeric field (e.g. quantity or rate): the
+/// value rounded to exactly two decimal places when it parses, otherwise the
+/// raw text unchanged (empty/in-progress/invalid input is never mangled).
+///
+/// Display-only: calculations must keep using the unrounded values via
+/// [`parse_amount`], never this formatted string.
+pub fn fmt_decimal(s: &str) -> String {
+    let trimmed = s.trim();
+    // Rust's f64 parser accepts "9." and "1.5e" as complete numbers; keep
+    // them raw so an in-progress entry (e.g. typing "9." on the way to "9.5")
+    // is not shown as a rounded value before the user finishes.
+    if trimmed.ends_with('.') || trimmed.ends_with('e') || trimmed.ends_with('E') {
+        return s.to_owned();
+    }
+    match parse_amount(s) {
+        Some(value) => format!("{value:.2}"),
+        None => s.to_owned(),
+    }
+}
+
 /// Percent-encode a string so it can be embedded in a `data:` URL.
 pub fn percent_encode(input: &str) -> String {
     let mut out = String::with_capacity(input.len());
@@ -170,4 +190,37 @@ pub fn textarea_value(ev: &web_sys::Event) -> String {
         .and_then(|target| target.dyn_into::<web_sys::HtmlTextAreaElement>().ok())
         .map(|area| area.value())
         .unwrap_or_default()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fmt_decimal_rounds_to_two_places() {
+        assert_eq!(fmt_decimal("9.6666"), "9.67");
+        assert_eq!(fmt_decimal("1125.3333"), "1125.33");
+        assert_eq!(fmt_decimal("5"), "5.00");
+        assert_eq!(fmt_decimal("0"), "0.00");
+        assert_eq!(fmt_decimal("2.5"), "2.50");
+        assert_eq!(fmt_decimal(" 7 "), "7.00");
+    }
+
+    #[test]
+    fn fmt_decimal_leaves_unparseable_input_untouched() {
+        assert_eq!(fmt_decimal(""), "");
+        assert_eq!(fmt_decimal("9."), "9.");
+        assert_eq!(fmt_decimal("1.5e"), "1.5e");
+        assert_eq!(fmt_decimal("abc"), "abc");
+        assert_eq!(fmt_decimal("-3"), "-3");
+    }
+
+    #[test]
+    fn fmt_decimal_does_not_affect_calculation_input() {
+        // totals keep using the full-precision values
+        let total = total_amount("9.6666", "1125.3333").expect("valid inputs");
+        assert!((total - 10878.14687778).abs() < 1e-6);
+        // ...while the display shows the rounded form
+        assert_eq!(fmt_decimal("9.6666"), "9.67");
+    }
 }
