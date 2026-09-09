@@ -587,30 +587,30 @@ fn InvoiceSheet(
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th class="center">"#"</th>
+                                    <th class="text-center">"#"</th>
                                     <th>"Item"</th>
                                     <th>"HSN/SAC"</th>
-                                    <th>"Quantity"</th>
-                                    <th>"Rate/Item"</th>
-                                    <th>"Discount"</th>
-                                    <th>"Taxable Value"</th>
-                                    <th>"IGST"</th>
-                                    <th>"CESS"</th>
-                                    <th class="right">"Total"</th>
+                                    <th class="text-right">"Quantity"</th>
+                                    <th class="text-right">"Rate/Item"</th>
+                                    <th class="text-right">"Discount"</th>
+                                    <th class="text-right">"Taxable Value"</th>
+                                    <th class="text-right">"IGST"</th>
+                                    <th class="text-right">"CESS"</th>
+                                    <th class="text-right">"Total"</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="center">"1"</td>
-                                    <td class="left strong">{move || fields.item.get()}</td>
-                                    <td class="left">{move || fields.hsn.get()}</td>
-                                    <td class="right">{move || fmt_decimal(&fields.hours.get())}</td>
-                                    <td class="center">{move || fmt_decimal(&fields.rate.get())}</td>
-                                    <td class="right">"0.00"</td>
-                                    <td class="right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
-                                    <td class="right">"0.00"</td>
-                                    <td class="right">"0.00"</td>
-                                    <td class="right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
+                                    <td class="text-center">"1"</td>
+                                    <td class="text-left font-weight-bold">{move || fields.item.get()}</td>
+                                    <td class="text-left">{move || fields.hsn.get()}</td>
+                                    <td class="text-right">{move || fmt_decimal(&fields.hours.get())}</td>
+                                    <td class="text-center">{move || fmt_decimal(&fields.rate.get())}</td>
+                                    <td class="text-right">"0.00"</td>
+                                    <td class="text-right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
+                                    <td class="text-right">"0.00"</td>
+                                    <td class="text-right">"0.00"</td>
+                                    <td class="text-right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -622,16 +622,16 @@ fn InvoiceSheet(
                             <table class="table table-clear">
                                 <tbody>
                                     <tr>
-                                        <td class="left"><strong>"Taxable Amount"</strong></td>
-                                        <td class="right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
+                                        <td class="text-left"><strong>"Taxable Amount"</strong></td>
+                                        <td class="text-right">{move || fmt_amount(total.get().unwrap_or(0.0))}</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>"Total Tax"</strong></td>
-                                        <td class="right">"0.00"</td>
+                                        <td class="text-left"><strong>"Total Tax"</strong></td>
+                                        <td class="text-right">"0.00"</td>
                                     </tr>
                                     <tr>
-                                        <td class="left"><strong>"Total"</strong></td>
-                                        <td class="right"><strong>{move || fmt_amount(total.get().unwrap_or(0.0))}</strong></td>
+                                        <td class="text-left"><strong>"Total"</strong></td>
+                                        <td class="text-right"><strong>{move || fmt_amount(total.get().unwrap_or(0.0))}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>

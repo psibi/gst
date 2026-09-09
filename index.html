@@ -51,6 +51,42 @@
           box-shadow: none !important;
           border-radius: 0 !important;
         }
+        /* Chrome strips background colors when exporting PDF; keep zebra
+           striping and any filled/muted areas visible in the output. */
+        .invoice-sheet,
+        .invoice-sheet .table-striped tbody tr:nth-of-type(odd),
+        .invoice-sheet .table-active {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        /* Compact, invoice-like typography (print only; screen unchanged). */
+        .invoice-sheet {
+          font-size: 14px;
+        }
+        .invoice-sheet .card-header {
+          padding: 0.5rem 1.25rem;
+        }
+        .invoice-sheet .card-body {
+          padding: 1rem 1.25rem;
+        }
+        .invoice-sheet .table th,
+        .invoice-sheet .table td {
+          padding: 0.3rem 0.5rem;
+        }
+        /* Clean page breaks: repeat the column header on each page and never
+           split a row or a table block in half. */
+        .invoice-sheet table thead {
+          display: table-header-group;
+        }
+        .invoice-sheet tr {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        .invoice-sheet .table-responsive-sm {
+          overflow: visible !important;
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
         @page {
           size: A4;
           margin: 12mm;
