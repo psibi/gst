@@ -39,7 +39,11 @@
           margin: 0 !important;
         }
         .row {
-          margin: 0 !important;
+          /* Kill only Bootstrap's negative horizontal gutters so content
+             isn't clipped at the page edge; keep vertical margins (mb-*) so
+             spacing matches the on-screen preview in the PDF. */
+          margin-left: 0 !important;
+          margin-right: 0 !important;
         }
         .invoice-col {
           flex: 0 0 100% !important;
